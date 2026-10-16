@@ -2,9 +2,11 @@
 
 **A graph-native second brain for stock market research, built on [Flowsint](https://github.com/reconurge/flowsint).**
 
-Status: **phase 1 in progress** — design documentation complete, and the entity types drafted in
-[`market_types/`](market_types/README.md) (251 tests, mypy strict). Enrichers and deployment wait on
-[ADR-0003](docs/adr/0003-type-registration-strategy.md); see the [roadmap](docs/11-roadmap.md).
+Status: **phase 1 in progress** — design documentation complete, with the entity types
+([`market_types/`](market_types/README.md), 251 tests) and the five spine enrichers
+([`market_enrichers/`](market_enrichers/README.md), 147 tests) drafted; both mypy strict. Nothing has
+run inside a real Flowsint yet: that is [ADR-0003](docs/adr/0003-type-registration-strategy.md), the
+phase-1 gate. See the [roadmap](docs/11-roadmap.md).
 Created: 2026-10-16
 
 ---
@@ -65,6 +67,7 @@ Read in order; each doc stands alone but they build.
 | [12 — Environment notes](docs/12-environment-notes.md) | What is reachable from which machine; sandbox egress findings |
 | [ADRs](docs/adr/) | Decisions, with the alternatives that lost and why |
 | [`market_types/`](market_types/README.md) | The ontology in code: six types, merge keys, identifier checksums, provenance mixin |
+| [`market_enrichers/`](market_enrichers/README.md) | The five spine enrichers, the EDGAR and EODHD clients, and the rate-limited caching fetch layer |
 | [Glossary](docs/glossary.md) | Flowsint terms, market terms, this project's terms |
 | [References](docs/references.md) | Every external source cited, with verification status |
 
@@ -75,9 +78,9 @@ market-brain/
 ├── docs/                      # design documentation
 ├── templates/                 # note templates for the brain layer
 ├── market_types/              # ✅ flowsint_types-compatible entity types + tests
+├── market_enrichers/          # ✅ enrichers, EDGAR/EODHD clients, fetch layer + tests
 ├── MIGRATION.md               # how this moves into its own repo
 └── (next)
-    ├── market_enrichers/      # flowsint_enrichers-compatible enrichers
     ├── deploy/                # docker-compose overlay onto upstream Flowsint
     ├── queries/               # Cypher library
     └── vault/                 # the markdown brain (notes, theses, memos)

@@ -30,11 +30,16 @@ Tasks:
    inside a running Flowsint**, which is task 2.
 4. Neo4j constraints and indexes for those merge keys; resolve **Q4** (our migration step vs upstream
    `neo4j-migrations/`) and **confirm whether node labels are lowercased**.
-5. `tools/`: EDGAR client (declared User-Agent, rate limit, cache, retrieval records, payload archive)
-   and EODHD client.
-6. Enrichers: `alias_to_security`, `security_to_issuer`, `issuer_to_filings`,
-   `issuer_to_insider_transactions`, `issuer_to_facts`.
-7. Contract tests against the pinned `FLOWSINT_VERSION`; `health.uncited_claims` wired as a test.
+5. ~~`tools/`: EDGAR client (declared User-Agent, rate limit, cache, retrieval records, payload
+   archive) and EODHD client.~~ **Drafted** in
+   [`market_enrichers/tools/`](../market_enrichers/README.md), including the Form 4 XML parser.
+   EDGAR payload shapes and EODHD REST paths still need validating against live responses.
+6. ~~Enrichers: `alias_to_security`, `security_to_issuer`, `issuer_to_filings`,
+   `issuer_to_insider_transactions`, `issuer_to_facts`.~~ **Drafted** — 147 tests, driven through
+   upstream's real `execute()` pipeline against a verbatim stub.
+7. Contract tests against the pinned `FLOWSINT_VERSION` (**partly done**: registration, params,
+   key/primary-field agreement and an ontology-label drift guard run against the stub);
+   `health.uncited_claims` is asserted per node in the enricher tests but not yet against Neo4j.
 
 Acceptance criteria:
 - Seeding `"AAPL"` yields an `Issuer` keyed `cik:0000320193` with `ISSUES`, `FILED` and Form 4 edges.

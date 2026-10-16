@@ -40,6 +40,7 @@ Both report the license as Apache-2.0 or AGPL-3.0 inconsistently; F13 resolves w
 | S3 | [EDGAR full-text search](https://efts.sec.gov/LATEST/search-index?q=) | ⚠️ not tested | Locating named counterparties in filing text |
 | S4 | `https://www.sec.gov/files/company_tickers.json` | ⚠️ not tested | Ticker → CIK bootstrap |
 | S5 | [EDGAR full-index archives](https://www.sec.gov/Archives/edgar/full-index/) | ⚠️ not tested | Daily/quarterly sweeps instead of per-filer polling |
+| S6 | EDGAR payload shapes: `filings.recent` parallel arrays, `companyfacts` unit/observation structure, Form 4 `ownershipDocument` element names (including `aff10b5One`) | ⚠️ **from prior knowledge** | The parsers in [`market_enrichers/tools/edgar.py`](../market_enrichers/README.md). Tested against synthetic fixtures that encode the known traps, which is **not** evidence the live payloads match — validate from your workstation |
 
 Direct verification attempt from the container: `data.sec.gov` returned
 `curl: (56) CONNECT tunnel failed, response 403`.

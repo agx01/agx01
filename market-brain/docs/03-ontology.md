@@ -220,6 +220,7 @@ Direction is normative — one direction per concept, no inverse duplicates.
 | `EVIDENCED_BY` | Expectation/Catalyst/edge-claim → Evidence | | the citation link |
 | `DOCUMENTS` | Note → any node | | note ↔ graph bridge |
 | `CITES` | Note → Evidence | | |
+| `RESOLVES_TO` | Phrase → Security/Issuer | `rank` | a text seed resolved to an identified entity by `alias_to_security`; the seed node is kept so the question that was asked stays visible |
 | `DERIVED_FROM` | any → any | `rule`, `derived_at` | inference provenance; never implicit |
 | `SAME_AS` | any → same type | `confidence`, `basis` | identity bridging, not silent merging |
 | `SCREENED_AGAINST` | Issuer/Person → SanctionsEntity | `match_score` | |

@@ -40,7 +40,12 @@ These are not preferences. Breaking one is a bug, not a style difference.
   (**verify against a running instance**).
 - Types: one `primary` field, a `compute_label` validator, every property declared explicitly even
   though `FlowsintType` allows extras.
-- Networking, caching, rate limiting and retrieval records live in `tools/`, never inside an enricher.
+- Networking, caching, rate limiting and retrieval records live in
+  [`market_enrichers/tools/`](market_enrichers/README.md), never inside an enricher.
+- Buffer graph writes with `stage()`/`link()` and let the shared `postprocess` write them; wrap
+  per-item work in `self.guard(...)` so a failure is logged rather than lost.
+- A new relationship label goes in [docs/03](docs/03-ontology.md) **before** it is emitted — a test
+  fails the build otherwise.
 - Per-item `try/except` with explicit logging — `Enricher.execute()` swallows exceptions and returns `[]`.
 - Dates ISO-8601, timestamps UTC, money always with a currency, any changeable value paired with an as-of date.
 - When upstream behaviour matters, **read the upstream source** and cite the path; it is early-stage and
@@ -55,22 +60,25 @@ alternatives gets an ADR; a decision without one gets re-litigated.
 
 ## Phase gate
 
-[ADR-0003](docs/adr/0003-type-registration-strategy.md) — getting an out-of-tree type registered
-inside a running Flowsint, visible in the API and UI, writing a node with the expected label — gates
-**deployment and enrichers**, not drafting. Types and pure helpers may be written and unit-tested
-standalone first, which is what [`market_types/`](market_types/README.md) is: six entity types,
-verified against a verbatim stub of upstream's base class, with real integration still owed.
+[ADR-0003](docs/adr/0003-type-registration-strategy.md) — getting out-of-tree types and enrichers
+registered inside a running Flowsint, visible in the API and UI, writing nodes with the expected
+labels — gates **deployment**, not drafting. Code is written and unit-tested against verbatim stubs
+of upstream's base classes first: that is what [`market_types/`](market_types/README.md) and
+[`market_enrichers/`](market_enrichers/README.md) are, and neither has executed in a real worker.
 
-Nothing that *talks to Flowsint at runtime* (enrichers, the deploy overlay, Neo4j migrations) lands
-before that spike answers Q1/Q2.
+What still waits on that spike: the deploy overlay, Neo4j migrations, and any claim that a hop
+*works* rather than that it is written and tested. Unverified external payload shapes
+([docs/12](docs/12-environment-notes.md)) wait on your workstation, not on the spike.
 
 ## Running the checks
 
 ```bash
-cd market_types
-uv run --with pytest --with pydantic pytest           # unit tests + doctests
-uv run --with mypy --with pydantic mypy src/ tests/   # strict
-ruff check src/ tests/ && ruff format --check src/ tests/
+for pkg in market_types market_enrichers; do (
+  cd $pkg
+  uv run --with pytest --with pydantic pytest                      # tests + doctests
+  uv run --with mypy --with pydantic --with pytest mypy src/ tests/ conftest.py
+  ruff check src/ tests/ conftest.py && ruff format --check src/ tests/ conftest.py
+) done
 ```
 
 Upstream's own gate is `make lint`, `make typecheck` and `uv run pytest -q` per package

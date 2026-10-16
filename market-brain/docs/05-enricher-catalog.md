@@ -28,6 +28,13 @@ The types these enrichers read and write are drafted in
 (`Issuer.from_cik`, `Security.from_eodhd_code`, `Fact.from_xbrl`, `InsiderTransaction.from_form4`) and
 the `provenance()` helper every enricher should use for the block in [08](08-provenance-and-trust.md).
 
+**All five phase-1 enrichers are drafted** in
+[`market_enrichers/`](../market_enrichers/README.md), with the EDGAR client, the Form 4 parser and
+the fetch layer (rate limiting, TTL caching, retrieval records, payload archiving) they share. They
+have **not** run inside a real Flowsint yet — see [ADR-0003](adr/0003-type-registration-strategy.md)
+— and the EDGAR payload shapes and EODHD REST paths they parse are unverified from the authoring
+environment ([12](12-environment-notes.md)).
+
 ## Phase 2 — the brain layer
 
 | Enricher | In → Out | Notes |

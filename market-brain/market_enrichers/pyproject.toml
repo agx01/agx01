@@ -1,0 +1,65 @@
+[project]
+name = "market-enrichers"
+version = "0.1.0"
+description = "Flowsint enrichers that build a market research graph from EDGAR and vendor data"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7",
+    "market-types",
+    # flowsint-core and flowsint-enrichers come from the Flowsint install this package
+    # registers into; neither is published to PyPI.
+    # See ../docs/adr/0003-type-registration-strategy.md.
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "mypy>=1.10", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/market_enrichers"]
+
+[tool.uv.sources]
+market-types = { path = "../market_types" }
+
+[tool.ruff]
+line-length = 90
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+# Matches market_types: upstream annotates optionals as Optional[X], and these modules
+# sit beside upstream's own enrichers.
+ignore = ["UP007", "UP045"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+plugins = ["pydantic.mypy"]
+# market_types is a sibling package in this repo, checked from source so a local run
+# needs no install step.
+mypy_path = "../market_types/src"
+
+[[tool.mypy.overrides]]
+module = ["flowsint_types.*", "flowsint_core.*", "flowsint_enrichers.*"]
+ignore_missing_imports = true
+
+# Enrichers subclass upstream's untyped Enricher base by design, and market_types
+# subclasses its untyped FlowsintType for the same reason (checked from source here).
+[[tool.mypy.overrides]]
+module = ["market_enrichers.*", "market_types.*"]
+disallow_subclassing_any = false
+
+[tool.pytest.ini_options]
+# src is collected so docstring doctests run. _base.py is skipped: it deliberately raises
+# without a Flowsint install. market_types is a sibling package, not yet installed.
+testpaths = ["tests", "src"]
+addopts = "-q --doctest-modules --ignore=src/market_enrichers/_base.py"
+pythonpath = ["src", "../market_types/src"]
