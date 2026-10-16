@@ -2,7 +2,9 @@
 
 **A graph-native second brain for stock market research, built on [Flowsint](https://github.com/reconurge/flowsint).**
 
-Status: **design phase — documentation only, no implementation code yet** (see [ADR-0002](docs/adr/0002-companion-repo-vs-fork.md) and the [roadmap](docs/11-roadmap.md)).
+Status: **phase 1 in progress** — design documentation complete, and the entity types drafted in
+[`market_types/`](market_types/README.md) (251 tests, mypy strict). Enrichers and deployment wait on
+[ADR-0003](docs/adr/0003-type-registration-strategy.md); see the [roadmap](docs/11-roadmap.md).
 Created: 2026-10-16
 
 ---
@@ -62,6 +64,7 @@ Read in order; each doc stands alone but they build.
 | [11 — Roadmap](docs/11-roadmap.md) | Phases with acceptance criteria |
 | [12 — Environment notes](docs/12-environment-notes.md) | What is reachable from which machine; sandbox egress findings |
 | [ADRs](docs/adr/) | Decisions, with the alternatives that lost and why |
+| [`market_types/`](market_types/README.md) | The ontology in code: six types, merge keys, identifier checksums, provenance mixin |
 | [Glossary](docs/glossary.md) | Flowsint terms, market terms, this project's terms |
 | [References](docs/references.md) | Every external source cited, with verification status |
 
@@ -69,11 +72,11 @@ Read in order; each doc stands alone but they build.
 
 ```
 market-brain/
-├── docs/                      # design documentation (this phase)
+├── docs/                      # design documentation
 ├── templates/                 # note templates for the brain layer
+├── market_types/              # ✅ flowsint_types-compatible entity types + tests
 ├── MIGRATION.md               # how this moves into its own repo
-└── (phase 1+)
-    ├── market_types/          # flowsint_types-compatible Pydantic entity types
+└── (next)
     ├── market_enrichers/      # flowsint_enrichers-compatible enrichers
     ├── deploy/                # docker-compose overlay onto upstream Flowsint
     ├── queries/               # Cypher library

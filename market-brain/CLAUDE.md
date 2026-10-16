@@ -55,6 +55,24 @@ alternatives gets an ADR; a decision without one gets re-litigated.
 
 ## Phase gate
 
-No implementation code lands until [ADR-0003](docs/adr/0003-type-registration-strategy.md) is settled:
-a market type registered inside a running Flowsint, visible in the API and UI, writing a node with the
-expected label. Everything else in phase 1 depends on that answer.
+[ADR-0003](docs/adr/0003-type-registration-strategy.md) — getting an out-of-tree type registered
+inside a running Flowsint, visible in the API and UI, writing a node with the expected label — gates
+**deployment and enrichers**, not drafting. Types and pure helpers may be written and unit-tested
+standalone first, which is what [`market_types/`](market_types/README.md) is: six entity types,
+verified against a verbatim stub of upstream's base class, with real integration still owed.
+
+Nothing that *talks to Flowsint at runtime* (enrichers, the deploy overlay, Neo4j migrations) lands
+before that spike answers Q1/Q2.
+
+## Running the checks
+
+```bash
+cd market_types
+uv run --with pytest --with pydantic pytest           # unit tests + doctests
+uv run --with mypy --with pydantic mypy src/ tests/   # strict
+ruff check src/ tests/ && ruff format --check src/ tests/
+```
+
+Upstream's own gate is `make lint`, `make typecheck` and `uv run pytest -q` per package
+([docs/02 §5](docs/02-flowsint-primer.md#5-contribution-mechanics-for-when-we-upstream-anything));
+ours mirrors it so code could be upstreamed without reformatting.

@@ -1,0 +1,37 @@
+# Secrets — never committed (docs/09-security-and-secrets.md)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# The private side of the brain
+vault/private/
+
+# Fetched payload archives and caches: bulk vendor data, re-fetchable,
+# licence-restricted (docs/10-compliance-and-ethics.md)
+tools/cache/
+tools/archive/
+
+# Database dumps — the Postgres dump carries the encrypted vault
+*.dump
+*.sql.gz
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/

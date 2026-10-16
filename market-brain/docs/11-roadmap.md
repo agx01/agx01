@@ -23,8 +23,11 @@ Tasks:
 1. Stand up Flowsint locally from pinned images; complete the hardening deltas ([09](09-security-and-secrets.md)).
 2. Resolve **Q1/Q2** — how out-of-tree types and enrichers reach the registries
    ([ADR-0003](adr/0003-type-registration-strategy.md)). Spike both candidate mechanisms; pick one on evidence.
-3. `market_types`: `Issuer`, `Security`, `Filing`, `InsiderTransaction`, `Person`, `Fact` + the
-   provenance mixin.
+3. ~~`market_types`: `Issuer`, `Security`, `Filing`, `InsiderTransaction`, `Person`, `Fact` + the
+   provenance mixin.~~ **Drafted** — see [`market_types/`](../market_types/README.md): six types with
+   registry merge keys, checksum-validated identifiers, computed labels, and 251 tests (ruff + mypy
+   strict clean). Unit-tested against a verbatim stub of upstream's base class; **not yet registered
+   inside a running Flowsint**, which is task 2.
 4. Neo4j constraints and indexes for those merge keys; resolve **Q4** (our migration step vs upstream
    `neo4j-migrations/`) and **confirm whether node labels are lowercased**.
 5. `tools/`: EDGAR client (declared User-Agent, rate limit, cache, retrieval records, payload archive)

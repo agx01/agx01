@@ -25,7 +25,7 @@ symbols. So: **tickers are never merge keys. Registry identifiers are.**
 | Entity | Merge key (`primary`) | Canonical form | Rationale |
 |---|---|---|---|
 | `Issuer` | `issuer_id` | `cik:0000320193` (10-digit zero-padded), else `lei:<20 char>`, else `slug:<normalized-name>` | CIK is stable across renames, ticker changes and re-listings; LEI covers non-SEC filers |
-| `Security` | `security_id` | `figi:BBG000B9XRY4` when known, else `mic:XNAS:AAPL`, else `eodhd:AAPL.US` | FIGI is share-class precise and permanently assigned; MIC+symbol is the documented fallback |
+| `Security` | `security_id` | `figi:BBG000B9XRY4` when known, else `mic:XNAS:AAPL`, else `eodhd:AAPL.US`, else `slug:<symbol-or-isin>` | FIGI is share-class precise and permanently assigned; MIC+symbol is the documented fallback. A `slug:` key is **provisional** — what a bare seed like `AAPL` resolves to until the resolver enricher replaces it |
 | `Person` | `person_id` | `cik:0001214156` (Form 4 reporting owners have CIKs), else `slug:<name>@<issuer_id>` | Avoids collapsing two "John Smith" directors |
 | `Institution` | `institution_id` | `cik:` of the 13F filer, else `lei:`, else `slug:` | 13F filers are CIK-identified |
 | `Filing` | `accession` | `0000320193-24-000123` (dashed) | Globally unique per SEC filing |
@@ -51,6 +51,13 @@ confirmed pairs. Recording the bridge keeps the evidence for *why* two things ar
 **Aliases, not keys.** `ticker`, `cusip`, `isin`, `sedol`, `former_name`, `eodhd_code`,
 `tradingview_symbol` are all **indexed alias properties** on the node, never the merge key. Resolution
 always runs alias → key, via the resolver enricher ([05](05-enricher-catalog.md)).
+
+**Unresolved input still gets in.** Flowsint's `preprocess()` wraps a bare input string as
+`{primary_field: value}` and then silently drops whatever fails validation
+([02 §3](02-flowsint-primer.md#execution-pipeline)), so a seed of `AAPL` or `Apple Inc.` must validate
+rather than raise. It therefore lands under a `slug:` key with its alias recorded, and
+`is_authoritative(key)` is the test for "has this been resolved yet". Implemented in
+[`market_types`](../market_types/README.md).
 
 ## Node types
 

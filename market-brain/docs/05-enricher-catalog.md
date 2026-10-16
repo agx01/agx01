@@ -23,6 +23,11 @@ needs an entry in upstream's `_get_category_definitions()` is open question Q6.
 `alias_to_security` is the gatekeeper: **every** entry into the graph goes through resolution, so the
 merge-key discipline in [03 — Ontology](03-ontology.md#identity-resolution) holds by construction.
 
+The types these enrichers read and write are drafted in
+[`market_types/`](../market_types/README.md), including the key builders
+(`Issuer.from_cik`, `Security.from_eodhd_code`, `Fact.from_xbrl`, `InsiderTransaction.from_form4`) and
+the `provenance()` helper every enricher should use for the block in [08](08-provenance-and-trust.md).
+
 ## Phase 2 — the brain layer
 
 | Enricher | In → Out | Notes |
